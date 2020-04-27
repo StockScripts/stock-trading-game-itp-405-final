@@ -146,7 +146,7 @@ function Home() {
 			</div>
 			<div className="row">
 				<div className="col-sm">
-					<p>Check Chart:</p>
+					<p>Check Charts:</p>
 					<InteractiveChart />
 				</div>
 				<div className="col-sm">

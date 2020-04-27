@@ -1,5 +1,10 @@
 @extends('layouts.app')
-
+<?php
+echo 'here';
+if (isset($login_error)) {
+    dd($login_error);
+}
+?>
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
@@ -38,7 +43,6 @@
                                 @enderror
                             </div>
                         </div>
-
                         <div class="form-group row">
                             <div class="col-md-6 offset-md-4">
                                 <div class="form-check">
