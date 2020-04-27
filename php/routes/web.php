@@ -47,6 +47,6 @@ Route::post('register', [
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::get('/confirm_trade/:ticker', 'TransactionsController@renderConfirmTrade');
+Route::get('/confirm_trade/{ticker}', 'TransactionsController@renderConfirmTrade');
 
 Route::post('/confirm_trade', 'TransactionsController@trade');

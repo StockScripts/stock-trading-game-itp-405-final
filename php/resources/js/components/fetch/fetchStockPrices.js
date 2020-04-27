@@ -25,7 +25,17 @@ const issueRequest = (uri) => {
 };
 
 export const getCurrentPrice = (ticker) => {
-	return issueRequest(getUri('current', ticker));
+	return issueRequest(getUri('current', ticker))
+		.then(response => {
+			const keys = Object.keys(response);
+			return response[keys[0]]['1. open'];
+		})
+		.catch(err => {
+			console.log(err);
+			return new Promise((resolve, reject) => {
+				reject(err);
+			})
+		})
 };
 
 export const getRecentPrices = (ticker) => {

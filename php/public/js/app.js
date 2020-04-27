@@ -117581,7 +117581,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 function ConfirmTrade() {
-  var ticker = document.querySelector('#ticker-value');
+  var ticker = document.querySelector('#ticker-value').value;
 
   var _useState = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])({
     ticker: ticker,
@@ -117600,7 +117600,12 @@ function ConfirmTrade() {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                Object(_fetch_fetchStockPrices__WEBPACK_IMPORTED_MODULE_3__["getCurrentPrice"])(tradeInfo.ticker).then(function (res) {})["catch"](function (err) {
+                Object(_fetch_fetchStockPrices__WEBPACK_IMPORTED_MODULE_3__["getCurrentPrice"])(tradeInfo.ticker).then(function (res) {
+                  var new_trade_info = tradeInfo;
+                  new_trade_info.current_price = res;
+                  new_trade_info.value = new_trade_info.current_price * new_trade_info.num_shares;
+                  setTradeInfo(new_trade_info);
+                })["catch"](function (err) {
                   console.log(err);
                 });
 
@@ -117619,7 +117624,35 @@ function ConfirmTrade() {
 
     fetchData();
   }, [tradeInfo.ticker]);
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", null, "Here");
+  Object(react__WEBPACK_IMPORTED_MODULE_1__["useEffect"])(function () {
+    if (!tradeInfo.current_price || !tradeInfo.value) {
+      return;
+    }
+
+    var new_trade_info = tradeInfo;
+    new_trade_info.value = tradeInfo.current_price * tradeInfo.num_shares;
+    setTradeInfo(new_trade_info);
+  }, [tradeInfo.num_shares]);
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_1__["Fragment"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+    className: "container"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("form", {
+    action: "/confirm_trade",
+    method: "post"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+    className: "col-sm"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", null, "Ticker: ", tradeInfo.ticker), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", null, "Number Shares: ", tradeInfo.num_shares), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", null, "Current Price: ", tradeInfo.current_price ? tradeInfo.current_price : ''), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", null, "Current Value: ", tradeInfo.value ? tradeInfo.value : '')), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+    className: "col-sm"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("input", {
+    type: "text",
+    id: "update-ticker",
+    name: "update-ticker",
+    value: tradeInfo.ticker
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("input", {
+    type: "text",
+    id: "update-num-shares",
+    name: "update-num-shares",
+    value: tradeInfo.num_shares
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", null, "Update Totals"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", null, "Submit Trade")))));
 }
 
 if (document.getElementById('confirm-content')) {
@@ -118158,7 +118191,15 @@ var issueRequest = function issueRequest(uri) {
 };
 
 var getCurrentPrice = function getCurrentPrice(ticker) {
-  return issueRequest(getUri('current', ticker));
+  return issueRequest(getUri('current', ticker)).then(function (response) {
+    var keys = Object.keys(response);
+    return response[keys[0]]['1. open'];
+  })["catch"](function (err) {
+    console.log(err);
+    return new Promise(function (resolve, reject) {
+      reject(err);
+    });
+  });
 };
 var getRecentPrices = function getRecentPrices(ticker) {
   return issueRequest(getUri('current', ticker));
