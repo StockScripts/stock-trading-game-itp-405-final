@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Api\StocksApi;
 use Auth;
+use DB;
 use Illuminate\Http\Request;
 
 class TransactionsController extends Controller
@@ -12,6 +13,11 @@ class TransactionsController extends Controller
         'buy',
         'sell',
     ];
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     public function renderConfirmTrade($ticker)
     {
@@ -24,8 +30,7 @@ class TransactionsController extends Controller
     {
         $request->validate([
             'ticker' => 'string',
-            'numShares' => 'integer',
-            'type' => 'in_array:_availableActions',
+            'numShares' => 'numeric',
         ]);
         $type = $request->input('type');
         if ($type === 'buy') {
@@ -53,7 +58,7 @@ class TransactionsController extends Controller
             return back()
                 ->with('error', 'You do not have enough balance to perform transaction');
         }
-        $new_user_balance = $user_balance - $total_transaction_cost;
+        $new_user_balance = $user_balance->balance - $total_transaction_cost;
         DB::table('transactions')->insert([
             'user_id' => $user->id,
             'type' => 'buy',

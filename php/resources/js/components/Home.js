@@ -14,6 +14,8 @@ function Home() {
 	const balance = JSON.parse(document.querySelector('#balance-value').value);
 	const username = document.querySelector('#username-value').value;
 
+	console.log(transactions_data);
+
 	// Display holdings
 	const getHoldingsJsx = (h) => {
 		if (!h || h.length === 0) {
@@ -23,12 +25,12 @@ function Home() {
 		}
 		return h.map(holding =>(
 			<div className="container">
-				<div className="row">
-					<div className="col=sm">
+				<div className="row m-auto">
+					<div className="col=sm p-3">
 						<p>Ticker: {holding.ticker}</p>
 						<p>Price: {holding.price}</p>
 					</div>
-					<div className="col=sm">
+					<div className="col=sm p-3">
 						<p>Num Shares: {holding.num_shares}</p>
 						<p>Total Value: {holding.value}</p>
 					</div>	

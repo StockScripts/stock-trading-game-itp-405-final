@@ -117582,12 +117582,17 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 function ConfirmTrade() {
   var ticker = document.querySelector('#ticker-value').value;
+  var csrf_token = document.querySelector('#csrf-token').content;
+  console.log(csrf_token);
+  var validActions = ['buy', 'sell'];
 
   var _useState = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])({
     ticker: ticker,
     num_shares: 1,
     current_price: null,
-    value: null
+    value: null,
+    last_updated: null,
+    type: validActions[0]
   }),
       _useState2 = _slicedToArray(_useState, 2),
       tradeInfo = _useState2[0],
@@ -117601,10 +117606,13 @@ function ConfirmTrade() {
             switch (_context.prev = _context.next) {
               case 0:
                 Object(_fetch_fetchStockPrices__WEBPACK_IMPORTED_MODULE_3__["getCurrentPrice"])(tradeInfo.ticker).then(function (res) {
-                  var new_trade_info = tradeInfo;
-                  new_trade_info.current_price = res;
-                  new_trade_info.value = new_trade_info.current_price * new_trade_info.num_shares;
-                  setTradeInfo(new_trade_info);
+                  setTradeInfo({
+                    ticker: tradeInfo.ticker,
+                    num_shares: tradeInfo.num_shares,
+                    current_price: res,
+                    value: res * tradeInfo.num_shares,
+                    last_updated: Date.now()
+                  });
                 })["catch"](function (err) {
                   console.log(err);
                 });
@@ -117623,36 +117631,80 @@ function ConfirmTrade() {
     }();
 
     fetchData();
-  }, [tradeInfo.ticker]);
-  Object(react__WEBPACK_IMPORTED_MODULE_1__["useEffect"])(function () {
-    if (!tradeInfo.current_price || !tradeInfo.value) {
-      return;
-    }
+  }, [tradeInfo]);
 
-    var new_trade_info = tradeInfo;
-    new_trade_info.value = tradeInfo.current_price * tradeInfo.num_shares;
-    setTradeInfo(new_trade_info);
-  }, [tradeInfo.num_shares]);
+  var handleUpdate = function handleUpdate(event) {
+    var new_num_shares = document.querySelector('#update-num-shares').value;
+    event.preventDefault();
+    setTradeInfo({
+      ticker: tradeInfo.ticker,
+      num_shares: new_num_shares,
+      current_price: null,
+      value: null
+    });
+  };
+
+  var getSelectionsJsx = function getSelectionsJsx() {
+    var options = validActions.map(function (action) {
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_1__["Fragment"], null);
+    });
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_1__["Fragment"], null);
+  };
+
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_1__["Fragment"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
-    className: "container"
+    className: "container w-50 p-5 pb-2 m-auto text-center bg-white"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", {
+    className: "h3 p-2"
+  }, "Confirm Trade:"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+    className: "row p-2"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+    className: "col-md"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", null, "Ticker: ", tradeInfo.ticker), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", null, "Number Shares: ", tradeInfo.num_shares), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", null, "Current Price: ", tradeInfo.current_price ? parseFloat(tradeInfo.current_price).toFixed(2) : 'loading...'), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", null, "Current Value: ", tradeInfo.value ? parseFloat(tradeInfo.value).toFixed(2) : 'loading...')), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+    className: "col-md text-center float-right m-2"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("form", {
     action: "/confirm_trade",
     method: "post"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
-    className: "col-sm"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", null, "Ticker: ", tradeInfo.ticker), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", null, "Number Shares: ", tradeInfo.num_shares), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", null, "Current Price: ", tradeInfo.current_price ? tradeInfo.current_price : ''), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", null, "Current Value: ", tradeInfo.value ? tradeInfo.value : '')), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
-    className: "col-sm"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("input", {
+    type: "hidden",
+    name: "_token",
+    value: csrf_token
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("label", {
+    htmlFor: "ticker",
+    className: "p-2"
+  }, "Ticker: "), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("input", {
     type: "text",
+    className: "w-25",
+    pattern: "^[A-Za-z -]+$",
     id: "update-ticker",
-    name: "update-ticker",
-    value: tradeInfo.ticker
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("input", {
-    type: "text",
+    name: "ticker",
+    defaultValue: tradeInfo.ticker
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("label", {
+    htmlFor: "numShares",
+    className: "p-2"
+  }, "# Shares:"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("input", {
+    type: "number",
+    className: "w-25",
+    pattern: "^[A-Za-z -]+$",
     id: "update-num-shares",
-    name: "update-num-shares",
-    value: tradeInfo.num_shares
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", null, "Update Totals"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", null, "Submit Trade")))));
+    name: "numShares",
+    defaultValue: tradeInfo.num_shares
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("label", {
+    htmlFor: "type",
+    className: "p-2"
+  }, "Action:"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("select", {
+    name: "type",
+    id: "type",
+    defaultValue: "buy"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("option", {
+    value: "buy"
+  }, "Buy"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("option", {
+    value: "sell"
+  }, "Sell")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+    className: "btn btn-secondary m-1",
+    onClick: handleUpdate
+  }, "Update Totals"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
+    className: "btn btn-primary m-1"
+  }, "Submit Trade")))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", null, "*Note: This trade will be executed at market price on submit. Please ensure you are using up to date information."), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", null, "*Note: This simulator does not account for market hours nor trading volume. It is based off of open price data.")));
 }
 
 if (document.getElementById('confirm-content')) {
@@ -117747,7 +117799,8 @@ function Home() {
   var transactions_data = JSON.parse(document.querySelector('#transactions-values').value);
   var holdings_data = JSON.parse(document.querySelector('#holdings-values').value);
   var balance = JSON.parse(document.querySelector('#balance-value').value);
-  var username = document.querySelector('#username-value').value; // Display holdings
+  var username = document.querySelector('#username-value').value;
+  console.log(transactions_data); // Display holdings
 
   var getHoldingsJsx = function getHoldingsJsx(h) {
     if (!h || h.length === 0) {
@@ -117758,11 +117811,11 @@ function Home() {
       return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
         className: "container"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
-        className: "row"
+        className: "row m-auto"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
-        className: "col=sm"
+        className: "col=sm p-3"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", null, "Ticker: ", holding.ticker), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", null, "Price: ", holding.price)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
-        className: "col=sm"
+        className: "col=sm p-3"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", null, "Num Shares: ", holding.num_shares), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", null, "Total Value: ", holding.value))));
     });
   }; // Displaying transactions
