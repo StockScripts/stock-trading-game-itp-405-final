@@ -2,6 +2,7 @@ import React, {useEffect, useState, Fragment} from 'react';
 import ReactDOM from 'react-dom';
 import {getCurrentPrice} from './fetch/fetchStockPrices';
 import InteractiveChart from './charts/InteractiveChart';
+import PriceInformation from './util/PriceInformation';
 
 function Home() {
 	const [holdings, setHoldings] = useState({
@@ -9,28 +10,37 @@ function Home() {
 		loading: true
 	});
 
+	const [pagination, setPagination] = useState({
+		holdings_index: 0,
+		transactions_index: 0,
+		max_results: 5
+	});
+
 	const transactions_data = JSON.parse(document.querySelector('#transactions-values').value);
 	const holdings_data = JSON.parse(document.querySelector('#holdings-values').value);
 	const balance = JSON.parse(document.querySelector('#balance-value').value);
 	const username = document.querySelector('#username-value').value;
 
-	console.log(transactions_data);
+	const capitalize = (s) => {
+		if (typeof s !== 'string') return '';
+		return s.charAt(0).toUpperCase() + s.slice(1);
+	}
 
 	// Display holdings
-	const getHoldingsJsx = (h) => {
+	const getHoldingsJsx = (h, i) => {
 		if (!h || h.length === 0) {
 			return <Fragment>
 				<p>You currently do not have any holdings...</p>	
 			</Fragment>;
 		}
-		return h.map(holding =>(
-			<div className="container">
+		return h.slice(i, i + pagination.max_results).map(holding =>(
+			<div className="container bg-white border">
 				<div className="row m-auto">
-					<div className="col=sm p-3">
-						<p>Ticker: {holding.ticker}</p>
-						<p>Price: {holding.price}</p>
+					<div className="col-sm p-3">
+						<p>Ticker: {holding.ticker.toUpperCase()}</p>
+						<p>Current Price: {holding.price}</p>
 					</div>
-					<div className="col=sm p-3">
+					<div className="col-sm p-3">
 						<p>Num Shares: {holding.num_shares}</p>
 						<p>Total Value: {holding.value}</p>
 					</div>	
@@ -40,22 +50,24 @@ function Home() {
 	};
 
 	// Displaying transactions
-	const getTransactionsJsx = (t) => {
+	const getTransactionsJsx = (t, i) => {
 		if (!t || t.length === 0) {
 			return <Fragment>
 				<p>No recent transactions to display...</p>
 			</Fragment>;
 		}
-		return t.map(transaction => (
-			<div className="container">
-				<div className="row">
-					<div className="col-sm">
-						test
+		return t.slice(i, i + pagination.max_results).map(transaction => (
+			<div className="container bg-white border">
+				<div className="row m-auto">
+					<div className="col-sm p-1">
+						<p>{capitalize(transaction.type) + ' ' + transaction.ticker.toUpperCase()}</p>
+						<p>ID: {transaction.id}</p>
 					</div>	
-					<div className="col-sm">
-						test	
+					<div className="col-sm p-1">
+						<p># Shares: {transaction.num_shares}</p>
+						<p>Date: {transaction.created_at}</p>
 					</div>
-				</div>	
+				</div>
 			</div>
 		));
 	};
@@ -70,12 +82,12 @@ function Home() {
 		}
 	}
 	const getMakeTradeJsx = () => (
-		<Fragment>
+		<div className="m-auto bg-white h-50 p-5">
 			<form onSubmit={handleTrade}>
 				<input type="text" id="buy-ticker-input"/>
-				<button>Trade</button>
+				<button className="btn btn-primary">Trade</button>
 			</form>
-		</Fragment>
+		</div>
 	);
 
 	// Fetch data on holdings
@@ -114,6 +126,40 @@ function Home() {
 		fetchData();
 	}, []);
 
+	const handleMoreHoldings = (e) => {
+		e.preventDefault();
+		setPagination({
+			...pagination,
+			holdings_index: Math.min(pagination.holdings_index + pagination.max_results, holdings.holdings.length - pagination.max_results + 1),
+		});
+	};
+
+	const handleFewerHoldings = (e) => {
+		e.preventDefault();
+		setPagination({
+			...pagination,
+			holdings_index: Math.max(0, pagination.holdings_index - pagination.max_results)
+		});
+	};
+
+	const handleMoreTransactions = (e) => {
+		e.preventDefault();
+		setPagination({
+			...pagination,
+			transactions_index: Math.min(pagination.transactions_index + pagination.max_results, transactions_data.length - pagination.max_results + 1),
+		})
+	};
+
+	const handleFewerTransactions = (e) => {
+		e.preventDefault();
+		setPagination({
+			...pagination,
+			transactions_index: Math.max(0, pagination.transactions_index - pagination.max_results)
+		});
+	};
+
+	console.log(pagination);
+
 	let total_value = 0;
 	let content;
 	if (holdings.loading) {
@@ -138,22 +184,45 @@ function Home() {
 			</div>
 			<div className="row">
 				<div className="col-sm">
-					<p>Holdings:</p>
-					{getHoldingsJsx(holdings.holdings)}
+					<p className="h3">Holdings:</p>
+					{getHoldingsJsx(holdings.holdings, pagination.holdings_index)}
+					<div className="container bg-dark text-light mt-0">
+						<div className="row p-2 m-auto">
+							<div className="col-sm">
+								<button className="btn btn-secondary" onClick={handleMoreHoldings}>More holdings</button>				
+							</div>
+							<div className="col-sm">
+								<button className="btn btn-secondary" onClick={handleFewerHoldings}>Fewer holdings</button>
+							</div>
+						</div>	
+					</div>
 				</div>
 				<div className="col-sm">
-					<p>Recent Transactions:</p>
-					{getTransactionsJsx(transactions_data)}
+					<p className="h3">Recent Transactions:</p>
+					{getTransactionsJsx(transactions_data, pagination.transactions_index)}
+					<div className="container bg-dark text-light mt-0">
+						<div className="row p-2 m-auto">
+							<div className="col-sm">
+								<button className="btn btn-secondary" onClick={handleMoreTransactions}>More transactions</button>				
+							</div>
+							<div className="col-sm">
+								<button className="btn btn-secondary" onClick={handleFewerTransactions}>Fewer transactions</button>
+							</div>
+						</div>	
+					</div>
+					
 				</div>
 			</div>
-			<div className="row">
-				<div className="col-sm">
-					<p>Check Charts:</p>
+			<div className="row m-auto">
+				<div className="col-sm bg-white p-5 mt-5 mb-5 border">
+					<p className="h3">Check Charts:</p>
 					<InteractiveChart />
 				</div>
-				<div className="col-sm">
-					<p>Make Trade:</p>
+				<div className="col-sm bg-white p-5 mt-5 mb-5 border">
+					<p className="h3">Make Trade:</p>
 					{getMakeTradeJsx()}
+					<p className="h3">Check Current Price:</p>
+					<PriceInformation />
 				</div>				
 			</div>
 		</div>;

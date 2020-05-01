@@ -1,8 +1,7 @@
 @extends('layouts.app')
 <?php
-echo 'here';
-if (isset($login_error)) {
-    dd($login_error);
+if ($errors->any()) {
+    echo $errors->all();
 }
 ?>
 @section('content')

@@ -39,7 +39,7 @@ function ConfirmTrade() {
 				});
 		};
 		fetchData();
-	}, [tradeInfo]);
+	}, [tradeInfo.numShares]);
 
 	const handleUpdate = (event) => {
 		const new_num_shares = document.querySelector('#update-num-shares').value;

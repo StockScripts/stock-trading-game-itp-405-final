@@ -20,6 +20,15 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 <body>
+    <div id="error-vals">
+        <input type="hidden" id="old-ticker" value="{{ old('ticker') }}">
+        <input type="hidden" id="old-numshares" value="{{ old('numShares') }}">
+        <input type="hidden" id="old-type" value="{{ old('type') }}">
+        <input type="hidden" id="error-ticker" value="{{ old('ticker') }}">
+        <input type="hidden" id="error-numshares" value="{{ old('numshares') }}">
+        <input type="hidden" id="error-type" value="{{ old('type') }}">
+    </div>
+    <script src="{{ asset('js/Errors.js') }}"></script>
     <input type="hidden" id="stocksBaseUrl" value="{{env('STOCKS_API')}}">
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
