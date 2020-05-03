@@ -38,11 +38,12 @@ function ConfirmTrade() {
 				});
 		};
 		fetchData();
-	}, [tradeInfo.numShares, tradeInfo.ticker]);
+	}, [tradeInfo.ticker, tradeInfo.num_shares]);
 
 	const handleUpdate = (event) => {
 		const new_num_shares = document.querySelector('#update-num-shares').value;
 		const new_ticker = document.querySelector('#update-ticker').value;
+		console.log('in handle update');
 		event.preventDefault();
 		setTradeInfo({
 			...tradeInfo,
