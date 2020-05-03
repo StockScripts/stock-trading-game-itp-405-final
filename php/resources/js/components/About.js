@@ -140,18 +140,13 @@ function About() {
 				<div className="container">
 					<p className="text-center m-auto h4">Error messages as flashed session data for when form submissions fail validation. Your error messages should be specific to the fields that failed validation as opposed to showing a single generic error message on the page.</p>
 					<p className="mt-2">
-						In the app layout blade template, I have both success and error divs. From the controllers, I either pass success or error on operations that are submitted.
+						My app has specific validation beyond just the laravel validators, specifically making sure the ticker gets a valid response from the stocks API. When there is an error, I pass back a message.
 					</p>
 					<p className="h5">Examples:</p>
 					<p>Error with API (Alpha Vantage seems to have weird quirks with certain tickers)</p>
 					<code className="mb-2">
 						return back()
                 			->with('error', 'There was an error with your transaction. This is likely an API issue loading the ticker provided.');
-					</code>
-					<p>Successful purchase of stock:</p>
-					<code>
-						return redirect('home')
-            				->with('success', 'Transaction completed successfully. Purchased ' . $request->input('numShares') . ' of ' . $request->input('ticker') . '.');
 					</code>
 				</div>
 		},
@@ -160,8 +155,103 @@ function About() {
 			demonstrated_by:
 				<div className="container">
 					<p className="text-center m-auto h4">Form submissions that fail validation should repopulate the form with the user’s input</p>
-					
+					<p className="mt-2 mb-1">All forms take advantage of this within the app.</p>
+					<p className="m-0">Example of call to <code>old()</code></p>
+					<code>
+						old('numShares', 1)
+					</code>
 				</div>
+		},
+		{
+			requirement: 'Flashed session data for when inserts, updates, and deletions are successful',
+			demonstrated_by:
+				<div className="container">
+					<p className="text-center m-auto h4 p-2">Flashed session data for when inserts, updates, and deletions are successful</p>
+					<p>This happens when the user issues a new comment or new discussion, or when the user performs a transaction.</p>
+					<p className="h5">Examples:</p>
+					<p>Transaction:</p>
+					<code>
+						return redirect('home')
+            				->with('success', 'Transaction completed successfully. Purchased ' . $request->input('numShares') . ' of ' . $request->input('ticker') . '.');
+					</code>
+					<p>New Discussion:</p>
+					<code>
+						return redirect('discussions')
+            				->with('success', 'Successfully added new discussion.');
+					</code>
+				</div>
+		},
+		{
+			requirement: 'Authentication - Sign up, Login, and Logout',
+			demonstrated_by:
+				<div className="container">
+					<p className="text-center m-auto h4 p-2">Authentication - Sign up, Login, and Logout</p>
+					<p className="mt-2">
+						This is all handled with Laravel's built in Auth. However, I had to add an observer to the User model to add a new balances entry upon sign up.
+					</p>
+				</div>
+		},
+		{
+			requirement: 'Blade templating with a layout that is used for all of your pages.',
+			demonstrated_by:
+				<div className="container">
+					<p className="text-center m-auto h4 p-2">Blade templating with a layout that is used for all of your pages.</p>
+					<p>
+						Every page is loaded with the default app layout. The Navbar changes if the user is authenticated.
+					</p>
+				</div>
+		},
+		{
+			requirement: 'The document title (the title tag) for each page should be unique and contain meaningful data.',
+			demonstrated_by:
+				<div className="container">
+					<p className="text-center m-auto h4 p-2">The document title (the title tag) for each page should be unique and contain meaningful data. This includes pages with different data. For example, on Amazon, the document title of a product page is different for every product listed.</p>
+					<p>
+						There is a unique document title on all pages. The new comment shows the discussion title in the doc title, and all other pages are dynamic and show multiple things. Thus, they have general titles.
+					</p>
+				</div>
+		},
+		{
+			requirement: 'All queries should go through Eloquent or the Query Builder for database access',
+			demonstrated_by:
+				<div className="container">
+					<p className="text-center m-auto h4 p-2">All queries should go through Eloquent or the Query Builder for database access</p>
+					<p className="mt-2">
+						All DB access is handled through the query builder, with the exception of new users. This is handled through Laravel's Auth/User model. The User observer uses query builder as well.
+					</p>	
+				</div>
+		},
+		{
+			requirement: 'Your site should look organized and have a consistent layout. Feel free to use Bootstrap if you’d like.',
+			demonstrated_by:
+				<div className="container">
+					<p className="text-center m-auto h4 p-2">Your site should look organized and have a consistent layout. Feel free to use Bootstrap if you’d like.</p>
+					<p className="mt-2">
+						The site uses Bootstrap and reusable React hooks/functions to provide a clean layout.
+					</p>
+				</div>
+		},
+		{
+			requirement: 'Build a commenting system from scratch for some resource in your application.',
+			demonstrated_by:
+				<div className="container">
+					<p className="text-center m-auto h4 p-2">Build a commenting system from scratch for some resource in your application. The comments in your commenting system should at the very least contain the commenter’s name, a comment body, and a time stamp. Comments should be displayed from the most recent to the oldest. Comments don’t need to be commentable.</p>
+					<p className="mt-2">
+						The discussions and discussion comments demonstrate this functionality.
+					</p>
+				</div>,
+			button_styling: "btn btn-outline-success btn-block"
+		},
+		{
+			requirement: 'Add real-time features to your Laravel project via a Web Socket service built in Node',
+			demonstrated_by:
+				<div className="container">
+					<p className="text-center m-auto h4 p-2">Add real-time features to your Laravel project via a Web Socket service built in Node</p>
+					<p className="mt-2">
+						I misread this initially and created an Express API for fetching stock data. It turned out to be a nice separation of concerns though, as I could call this API on the frontend and the backend of the laravel app.
+					</p>
+				</div>,
+			button_styling: "btn btn-outline-danger btn-block"
 		}
 	];
 	return (

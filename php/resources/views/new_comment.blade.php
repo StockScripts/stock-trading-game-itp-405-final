@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('page_title')
-	New Comment
+	New Comment For {{ $discussion->title }}
 @endsection
 
 @section('content')
