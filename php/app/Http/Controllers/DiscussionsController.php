@@ -21,11 +21,14 @@ class DiscussionsController extends Controller
     public function renderDiscussions(Request $request)
     {
         $discussions = DB::table('discussions')
+            ->orderBy('id', 'desc')
             ->get();
         foreach ($discussions as &$discussion) {
             $discussion_comments = DB::table('discussion_comments')
+                ->select('users.username as username', 'discussion_comments.created_at as created_at', 'discussion_comments.content as content')
                 ->join('users', 'users.id', '=', 'discussion_comments.user_id')
                 ->where('discussion_id', '=', $discussion->id)
+                ->orderBy('discussion_comments.id', 'desc')
                 ->get();
             $discussion->comments = $discussion_comments;
             $user = DB::table('users')
@@ -61,6 +64,7 @@ class DiscussionsController extends Controller
             'user_id' => $user->id,
             'discussion_type' => $request->input('discussion_type'),
             'title' => $request->input('discussion_title'),
+            'created_at' => date('Y-m-d H:i:s'),
         ]);
         // Render discussions page
         return redirect('discussions')
@@ -102,6 +106,7 @@ class DiscussionsController extends Controller
             'discussion_id' => $request->input('discussion_id'),
             'user_id' => $user->id,
             'content' => $request->input('comment'),
+            'created_at' => date('Y-m-d H:i:s'),
             'header' => '',
         ]);
 

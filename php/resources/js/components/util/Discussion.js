@@ -40,7 +40,7 @@ function Discussion(props) {
 							<Fragment>
 								<tr>
 									<td scope="col" className="w-25">
-										{comment.username}
+										{comment.username}, {comment.created_at ? comment.created_at : 'before timestamps'}
 									</td>
 									<td scope="col" className="w-75">
 										{comment.content}
@@ -63,6 +63,7 @@ function Discussion(props) {
 			<tr>
 				<td>
 					<p>{props.username}</p>
+					<p>{props.created_at}</p>
 				</td>
 				<td>
 					<a className="btn btn-outline-dark btn-block" onClick={handleShow}>{props.title}</a>

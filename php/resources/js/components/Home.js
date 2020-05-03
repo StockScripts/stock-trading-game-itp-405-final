@@ -76,7 +76,6 @@ function Home() {
 	const handleTrade = (event) => {
 		event.preventDefault();
 		const ticker_input = document.querySelector('#buy-ticker-input').value;
-		console.log(ticker_input);
 		if (ticker_input) {
 			window.location.replace('/confirm_trade/' + ticker_input);
 		}
@@ -158,8 +157,6 @@ function Home() {
 		});
 	};
 
-	console.log(pagination);
-
 	let total_value = 0;
 	let content;
 	if (holdings.loading) {
@@ -178,8 +175,8 @@ function Home() {
 			<div className="row">
 				<div className="col-sm">
 					<p className="h3 mb-2">Welcome, <div className="text-primary d-inline">{username}</div>!</p>
-					<p className="h5">Your account value is ${total_value}.</p>
-					<p className="h5">You currently have ${balance} spending power.</p>
+					<p className="h5">Your account value is ${parseFloat(total_value).toFixed(2)}.</p>
+					<p className="h5">You currently have ${parseFloat(balance).toFixed(2)} spending power.</p>
 				</div>
 			</div>
 			<div className="row">
