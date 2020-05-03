@@ -30,6 +30,7 @@ class HomeController extends Controller
             ->first();
         $transactions = DB::table('transactions')
             ->where('user_id', '=', $user->id)
+            ->orderBy('id', 'desc')
             ->get();
         $holdings = DB::table('holdings')
             ->where('user_id', '=', $user->id)

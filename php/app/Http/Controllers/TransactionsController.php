@@ -69,6 +69,7 @@ class TransactionsController extends Controller
             'type' => 'buy',
             'ticker' => $request->input('ticker'),
             'num_shares' => $request->input('numShares'),
+            'created_at' => date('Y-m-d H:i:s'),
         ]);
         $current_transaction = DB::table('transactions')
             ->where('user_id', '=', $user->id)
@@ -138,6 +139,7 @@ class TransactionsController extends Controller
             'type' => 'sell',
             'ticker' => $request->input('ticker'),
             'num_shares' => $request->input('numShares'),
+            'created_at' => date('Y-m-d H:i:s'),
         ]);
 
         // Remove from holdings
