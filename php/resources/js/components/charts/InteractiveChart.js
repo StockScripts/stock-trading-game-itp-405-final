@@ -24,7 +24,7 @@ function InteractiveChart() {
 			})}
 			<form>
 				<input type="text" id="ticker-input" placeholder={ticker}/>
-				<button onClick={handleSubmit}>Get Chart</button>
+				<button className="btn btn-dark" onClick={handleSubmit}>Get Chart</button>
 			</form>
 		</div>
 	);

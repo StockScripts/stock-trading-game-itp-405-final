@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Api\StocksApi;
 use Auth;
 use DB;
+use Exception;
 use Illuminate\Http\Request;
 
 class TransactionsController extends Controller
@@ -47,7 +48,12 @@ class TransactionsController extends Controller
             ->where('user_id', '=', $user->id)
             ->first();
         $StocksApi = new StocksApi();
-        $stock_price = $StocksApi->getCurrentPrice($request->input('ticker'));
+        try {
+            $stock_price = $StocksApi->getCurrentPrice($request->input('ticker'));
+        } catch (Exception $e) {
+            return back()
+                ->with('error', 'There was an error with your transaction. This is likely an API issue with the ticker provided.');
+        }
         if (!$stock_price) {
             return back()
                 ->with('error', 'Error with Stocks API');
@@ -98,7 +104,7 @@ class TransactionsController extends Controller
             ]);
 
         return redirect('home')
-            ->with('success', 'Transaction completed successfully');
+            ->with('success', 'Transaction completed successfully. Purchased ' . $request->input('numShares') . ' of ' . $request->input('ticker') . '.');
     }
 
     protected function _sell(Request $request)
@@ -159,7 +165,7 @@ class TransactionsController extends Controller
             ]);
 
         return redirect('home')
-            ->with('success', 'Transaction completed successfully');
+            ->with('success', 'Transaction completed successfully. Sold ' . $request->input('numShares') . ' of ' . $request->input('ticker') . '.');
 
     }
 }

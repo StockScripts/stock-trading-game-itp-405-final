@@ -16,3 +16,4 @@ require('./components/Example');
 require('./components/Home');
 require('./components/ConfirmTrade');
 require('./components/Discussions');
+require('./components/About');

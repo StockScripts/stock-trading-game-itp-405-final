@@ -83,6 +83,9 @@
                                 </div>
                             </li>
                         @endguest
+                        <li class="nav-item dropdown">
+                            <a href="/about" class="nav-link" role="button">About</a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -90,12 +93,12 @@
 
         <main class="py-4">
             @if (session('success'))
-                <div class="alert alert-success mt-2">
+                <div class="alert alert-success">
                     {{session('success')}}
                 </div>
             @endif
             @if (session('error'))
-                <div class="alert alert-danger mt-2">
+                <div class="alert alert-danger">
                     {{session('error')}}
                 </div>
             @endif

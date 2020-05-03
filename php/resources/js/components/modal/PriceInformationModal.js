@@ -9,8 +9,6 @@ function PriceInformationModal(props) {
 	const handleClose = () => {setShow(false)};
 	const handleShow = () => {setShow(true)};
 
-	console.log(props.data);
-
 	const getModalBody = () => {
 		if (!props.data) {
 			return (
