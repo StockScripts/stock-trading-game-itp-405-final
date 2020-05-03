@@ -50,3 +50,15 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/confirm_trade/{ticker}', 'TransactionsController@renderConfirmTrade');
 
 Route::post('/confirm_trade', 'TransactionsController@trade');
+
+Route::get('/discussions', 'DiscussionsController@renderDiscussions')->name('discussions');
+
+Route::get('/discussions/new', 'DiscussionsController@renderNewDiscussion');
+
+Route::post('/discussions', 'DiscussionsController@postDiscussion');
+
+Route::get('/discussions/comments/{discussion_id}', 'DiscussionsController@getComments');
+
+Route::get('/discussions/new_comment/{discussion_id}', 'DiscussionsController@renderNewComment');
+
+Route::post('/discussions/comments', 'DiscussionsController@postComment');

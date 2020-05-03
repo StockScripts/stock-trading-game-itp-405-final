@@ -1,5 +1,7 @@
 @extends('layouts.app')
-
+@section('page_title')
+	Stock Trading Game
+@endsection
 @section('content')
 	<div id="intro" class="container text-center m-auto w-50">
 		<p class="text-center m-auto h3">

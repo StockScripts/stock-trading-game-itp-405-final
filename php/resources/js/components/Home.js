@@ -36,11 +36,11 @@ function Home() {
 		return h.slice(i, i + pagination.max_results).map(holding =>(
 			<div className="container bg-white border">
 				<div className="row m-auto">
-					<div className="col-sm p-3">
+					<div className="col-sm p-1">
 						<p>Ticker: {holding.ticker.toUpperCase()}</p>
 						<p>Current Price: {holding.price}</p>
 					</div>
-					<div className="col-sm p-3">
+					<div className="col-sm p-1">
 						<p>Num Shares: {holding.num_shares}</p>
 						<p>Total Value: {holding.value}</p>
 					</div>	

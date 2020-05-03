@@ -3,6 +3,10 @@
 $transactions_encoded = json_encode($transactions->toArray());
 $holdings_encoded = json_encode($holdings->toArray());
 ?>
+
+@section('page_title')
+	Dashboard
+@endsection
 @section('content')
 <input type="hidden" id="transactions-values" value="{{$transactions_encoded}}">
 <input type="hidden" id="holdings-values" value="{{$holdings_encoded}}">

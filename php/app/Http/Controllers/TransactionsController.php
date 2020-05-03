@@ -38,7 +38,6 @@ class TransactionsController extends Controller
         } elseif ($type === 'sell') {
             return $this->_sell($request);
         }
-
     }
 
     protected function _buy(Request $request)

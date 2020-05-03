@@ -6,7 +6,6 @@ function ConfirmTrade() {
 	const ticker = document.querySelector('#ticker-value').value;
 
 	const csrf_token = document.querySelector('#csrf-token').content;
-	console.log(csrf_token);
 
 	const validActions = [
 		'buy',
@@ -24,11 +23,11 @@ function ConfirmTrade() {
 
 	useEffect(() => {
 		const fetchData = async () => {
+			console.log('here');
 			getCurrentPrice(tradeInfo.ticker)
 				.then(res => {
 					setTradeInfo({
-						ticker: tradeInfo.ticker,
-						num_shares: tradeInfo.num_shares,
+						...tradeInfo,
 						current_price: res,
 						value: res * tradeInfo.num_shares,
 						last_updated: Date.now()
@@ -39,34 +38,23 @@ function ConfirmTrade() {
 				});
 		};
 		fetchData();
-	}, [tradeInfo.numShares]);
+	}, [tradeInfo.numShares, tradeInfo.ticker]);
 
 	const handleUpdate = (event) => {
 		const new_num_shares = document.querySelector('#update-num-shares').value;
+		const new_ticker = document.querySelector('#update-ticker').value;
 		event.preventDefault();
 		setTradeInfo({
-			ticker: tradeInfo.ticker,
-			num_shares: new_num_shares,
-			current_price: null,
-			value: null
+			...tradeInfo,
+			ticker: new_ticker,
+			num_shares: new_num_shares
 		});
-	}
-
-	const getSelectionsJsx = () => {
-		const options = validActions.map(action => {
-			return <Fragment>
-				
-			</Fragment>
-		});
-		return <Fragment>
-			
-		</Fragment>
 	}
 
 	return (
 		<Fragment>
 		<div className="container w-50 p-5 pb-2 m-auto text-center bg-white">
-			<p className="h3 p-2">Confirm Trade:</p>
+			<p className="h3 p-2">Trade Preview:</p>
 			<div className="row p-2">
 				<div className="col-md">
 					<p>Ticker: {tradeInfo.ticker}</p>
@@ -75,22 +63,8 @@ function ConfirmTrade() {
 					<p>Current Value: {tradeInfo.value ? parseFloat(tradeInfo.value).toFixed(2) : 'loading...'}</p>
 				</div>
 				<div className="col-md text-center float-right m-2">
-					<form action="/confirm_trade" method="post">
-						<input type="hidden" name="_token" value={csrf_token}/>
-						<label htmlFor="ticker" className="p-2">Ticker: </label>
-						<input type="text" className="w-25" pattern="^[A-Za-z -]+$" id="update-ticker" name="ticker" defaultValue={tradeInfo.ticker}/>
-						<br/>
-						<label htmlFor="numShares" className="p-2"># Shares:</label>
-						<input type="number" className="w-25" pattern="^[A-Za-z -]+$" id="update-num-shares" name="numShares" defaultValue={tradeInfo.num_shares}/>
-						<br/>
-						<label htmlFor="type" className="p-2">Action:</label>
-						<select name="type" id="type" defaultValue="buy">
-						<option value="buy">Buy</option>
-						<option value="sell">Sell</option>
-						</select>
-						<br/>
+					<form action="#" method="post">
 						<div className="btn btn-secondary m-1" onClick={handleUpdate}>Update Totals</div>
-						<button className="btn btn-primary m-1">Submit Trade</button>
 					</form>
 				</div>
 			</div>

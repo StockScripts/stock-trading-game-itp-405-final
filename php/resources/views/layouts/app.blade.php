@@ -7,7 +7,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" id="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>@yield('page_title')</title>
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
@@ -60,8 +60,14 @@
                             @endif
                         @else
                             <li class="nav-item dropdown">
+                                <a href="/home" class="nav-link" role="button">Home</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="/discussions" class="nav-link" role="button">Discussions</a>
+                            </li>
+                            <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{ Auth::user()->name }} <span class="caret"></span>
+                                    {{ Auth::user()->username }} <span class="caret"></span>
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
@@ -83,6 +89,16 @@
         </nav>
 
         <main class="py-4">
+            @if (session('success'))
+                <div class="alert alert-success mt-2">
+                    {{session('success')}}
+                </div>
+            @endif
+            @if (session('error'))
+                <div class="alert alert-danger mt-2">
+                    {{session('error')}}
+                </div>
+            @endif
             @yield('content')
         </main>
     </div>

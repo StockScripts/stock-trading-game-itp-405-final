@@ -1,9 +1,9 @@
 @extends('layouts.app')
-<?php
-if ($errors->any()) {
-    echo $errors->all();
-}
-?>
+
+@section('page_title')
+    Login
+@endsection
+
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
